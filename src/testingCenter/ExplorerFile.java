@@ -5,6 +5,10 @@ import java.io.*;
 import java.util.stream.*;
 import java.nio.file.*;
 
+/*This program reads a file, prints out contents of file
+ * Then, the file will sort words in the file by length.
+ * Representation of my ability to use data streams, work with files, lambda expressions. */
+
 public class ExplorerFile {
 
 	public static void main(String[] args) throws IOException {
@@ -26,7 +30,7 @@ public class ExplorerFile {
 			byte byteData;
 			int i = 0;
 			Scanner in = new Scanner(testFile);
-			
+			System.out.println("The files reads:");
 			// while fin.read() does not return -1, every byte, type-casted to chat is printed.
 			while (((byteData = (byte) fin.read()) != -1) || (i==10)) {
 				
@@ -47,7 +51,7 @@ public class ExplorerFile {
 			result = words.collect(Collectors.groupingBy(w -> w.length(), 
 					Collectors.counting()));
 					
-			System.out.println("The amount of words and their lengths in dooboo.txt:");
+			System.out.println("The amount of words and their lengths in the file:");
 			System.out.println(result);
 			
 			in.close();

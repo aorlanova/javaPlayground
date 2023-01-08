@@ -2,22 +2,25 @@ package testingCenter;
 
 import java.util.Stack;
 
-/*Antonina Orlanova - Fall 2022 - infix calculator - MW 3:30
- * In-fix calculator
- * Finds result in o(n) time, each character is visited once
- * 
+/*Antonina Orlanova - Fall 2022 - infix calculator
+ * In-fix calculator using two stack data structures. One stack for operands, one for operators.
+ * Finds result in o(n) time, each character in the input string is visited once.
  */
 
 public class InFixCalc {
 
 	public static void main(String[] args) {
 		
+		//test one, answer should be 72
 		String test1 = "12 + 3 * 20";
 		postFix(test1);
+		// test two, answer should be 12
 		String test2 = "2 * 2 * 3";
 		postFix(test2);
+		//test three, error handling
 		String test3 = "";
 		postFix(test3);
+		//test four, error handling
 		String test4 = "1";
 		postFix(test4);
 		
@@ -32,12 +35,13 @@ public class InFixCalc {
 			
 			System.out.print("\nnothing entered");
 			return;
+		//when only one number is entered.
 		} else if(input.length() ==1) {
 			
 			System.out.print("\nonly one number entered, " + input.charAt(0));
 			return;
 			
-		}
+		} 
 		
 		//initialize holders for variables when popped out of stack
 		int var1 = 0;
@@ -50,10 +54,11 @@ public class InFixCalc {
 		// hold operators
 		char opHold = ' ';
 		
+		//Initialize stacks
 		Stack<Integer> opperands = new Stack<Integer>();
 		Stack<Character> opperators = new Stack<Character>();
 		
-		// itterate once over while string
+		// Iterate once over whole string
 		for (int i = 0; i < input.length(); i++) {
 			
 			// numeric value reached, add to numholder until full number stored
@@ -62,7 +67,7 @@ public class InFixCalc {
 				numHold += input.charAt(i);
 				
 		    } 
-			// add operators to operator stack here. Should not be more than 2 at a time, second goes into storage variable for comparison.
+			// add operators to operator stack here. Should not be more than 2 at a time, second goes into storage variable for comparison to uphold laws of order of operations.
 			if((input.charAt(i) == '%' || input.charAt(i) == '/' || input.charAt(i) == '*' || input.charAt(i) == '+' || input.charAt(i) == '-')) {
 				
 				if(opperators.size() == 0) {
@@ -89,12 +94,13 @@ public class InFixCalc {
 				//check here if operand count is two or end of string is reached. Want to calculate in twos
 				if(opHold != ' ') {
 					
+					// Case: top of stack is of higher precedence than holder
 					if((opperators.peek() == '/' || opperators.peek() == '*') && (opHold == '+' || opHold == '-')) {
 						var3 = opperands.pop();
 						var2 = opperands.pop();
 						var1 = opperands.pop();
+						
 						if (opperators.peek() == '/' && opHold == '+') {
-							
 							
 							result = var1/var2;
 							result += var3;
@@ -121,7 +127,7 @@ public class InFixCalc {
 							
 						}
 						
-						
+					// Case: top of stack is of lower precedence than holder
 					} else if((opperators.peek() == '+' || opperators.peek() == '-') && (opHold == '*' || opHold == '/')) {
 						var3 = opperands.pop();
 						var2 = opperands.pop();
@@ -154,6 +160,7 @@ public class InFixCalc {
 							
 						}
 						
+					// Case: top of stack and operator in holder are of equal precedence.
 					} else {
 						
 						var3 = opperands.pop();
@@ -173,17 +180,41 @@ public class InFixCalc {
 							result += var1;
 							opperands.push(result);
 						
-						} else if(opperators.peek() == '/') {
+						} else if(opperators.peek() == '/' && opHold == '/') {
 						
 							
 							result = var2/var3;
 							result /= var1;
 							opperands.push(result);
 						
-						} else if(opperators.peek() == '*') {
+						} else if(opperators.peek() == '*' && opHold == '*') {
 						
 							result = var2*var3;
 							result *= var1;
+							opperands.push(result);
+						
+						} else if(opperators.peek() == '*' && opHold == '/') {
+						
+							result = var2*var3;
+							result /= var1;
+							opperands.push(result);
+						
+						} else if(opperators.peek() == '/' && opHold == '*') {
+						
+							result = var2/var3;
+							result *= var1;
+							opperands.push(result);
+						
+						} else if(opperators.peek() == '+' && opHold == '-') {
+						
+							result = var2+var3;
+							result -= var1;
+							opperands.push(result);
+						
+						} else if(opperators.peek() == '-' && opHold == '+') {
+						
+							result = var2-var3;
+							result += var1;
 							opperands.push(result);
 						
 						}
@@ -191,7 +222,7 @@ public class InFixCalc {
 						
 					}
 					
-					
+				//Reach end of input string, have to complete final operation and push result onto top of stack	
 				} else if (i == input.length()-1) {
 					
 					var3 = opperands.pop();
